@@ -5,6 +5,7 @@ mediapipe
 numpy
 scikit-learn
 joblib
+pandas
 
 opencv-python-headless
 pillow
