@@ -4,6 +4,7 @@ import numpy as np
 import mediapipe as mp
 import joblib
 import pandas as pd
+import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -20,9 +21,19 @@ app.add_middleware(
 )
 
 # Load model and MediaPipe
-model = joblib.load("gesture_model.pkl")
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(BASE_DIR, "gesture_model.pkl")
+model = joblib.load(model_path)
 mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(max_num_hands=1, static_image_mode=True)
+hands = mp_hands.Hands(
+    max_num_hands=1,
+    static_image_mode=False,
+    min_detection_confidence=0.6,
+    min_tracking_confidence=0.6
+)
+
 
 class PredictRequest(BaseModel):
     image: str  # base64 encoded image
